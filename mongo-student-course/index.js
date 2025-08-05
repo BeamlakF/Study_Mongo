@@ -37,5 +37,20 @@ async function readStudents() {
 }
 readStudents();
 
-
-
+async function deleteDuplictes(){
+    try{
+        await client.connect();
+        const db = client.db('school');
+        const studentsCollection = db.collection ('students');
+        const allAmina = await studentsCollection.find({ name: 'Amina' }).toArray();
+        const duplicates = allAmina.slice(1);
+        for (const student of duplicates){
+            await studentsCollection.deleteOne({ _id: student._id });
+        }
+        console.log('deleted!');
+        await client.close();
+    }
+    catch(error){
+         console.error("failed", error);
+    }
+}
